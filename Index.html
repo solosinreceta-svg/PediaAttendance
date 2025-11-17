@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan E Pediatría</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --text: #333;
+            --bg: #fff;
+            --card-bg: #f8f9fa;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode {
+            --primary: #34495e;
+            --secondary: #2980b9;
+            --accent: #c0392b;
+            --light: #2c3e50;
+            --dark: #ecf0f1;
+            --text: #ecf0f1;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background-color: var(--primary);
+            color: white;
+            transition: left 0.3s ease;
+            z-index: 200;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            padding: 1rem;
+            background-color: rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 1rem;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .submenu {
+            list-style: none;
+            padding-left: 1rem;
+            display: none;
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .submenu.active {
+            display: block;
+        }
+
+        .submenu a {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .menu-toggle-btn {
+            background: none;
+            border: none;
+            color: white;
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Main Content */
+        main {
+            padding: 2rem 0;
+            min-height: calc(100vh - 120px);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .page-title {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 1rem;
+            background-color: var(--secondary);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-content {
+            padding: 1rem;
+            display: none;
+        }
+
+        .card-content.active {
+            display: block;
+        }
+
+        .module-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            background-color: rgba(0,0,0,0.05);
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+        }
+
+        .topics-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .topics-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .topics-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-bar-container {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--success);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar.water-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: waterFlow 2s infinite;
+        }
+
+        @keyframes waterFlow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-percentage {
+            position: absolute;
+            right: 10px;
+            top: 0;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .completion-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .notes-section {
+            margin-top: 1rem;
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .save-notes {
+            margin-top: 0.5rem;
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Settings */
+        .settings-option {
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-option label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .settings-option select, 
+        .settings-option input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--secondary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Contact */
+        .contact-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .contact-card {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .contact-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--secondary);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .contact-link:hover {
+            background-color: var(--primary);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            
+            .module-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Plan E Pediatría</div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+        </div>
+    </header>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">Menú</div>
+            <button class="close-sidebar" id="closeSidebar">×</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" data-section="year1">1er Año</a></li>
+            <li><a href="#" data-section="year2">2do Año</a></li>
+            <li><a href="#" data-section="year3">3er Año</a></li>
+            <li><a href="#" data-section="progress">Mis Rotaciones</a></li>
+            <li><a href="#" data-section="settings">Configuración</a></li>
+            <li><a href="#" data-section="contact">Contáctenos</a></li>
+        </ul>
+    </div>
+
+    <main class="container">
+        <section id="year1" class="section active">
+            <h2 class="page-title">Primer Año de Residencia</h2>
+            <div id="year1-content">
+                <!-- El contenido se cargará dinámicamente -->
+            </div>
+        </section>
+
+        <section id="year2" class="section">
+            <h2 class="page-title">Segundo Año de Residencia</h2>
+            <div id="year2-content">
+                <!-- El contenido se cargará dinámicamente -->
+            </div>
+        </section>
+
+        <section id="year3" class="section">
+            <h2 class="page-title">Tercer Año de Residencia</h2>
+            <div id="year3-content">
+                <!-- El contenido se cargará dinámicamente -->
+            </div>
+        </section>
+
+        <section id="progress" class="section">
+            <h2 class="page-title">Mis Rotaciones</h2>
+            <div class="progress-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Progreso General</h3>
+                        <span id="overallPercentage">0%</span>
+                    </div>
+                    <div class="card-content active">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="overallProgressBar"></div>
+                            <div class="progress-percentage" id="overallProgressText">0%</div>
+                        </div>
+                        <p>Rotaciones completadas: <span id="completedRotations">0</span> de <span id="totalRotations">0</span></p>
+                    </div>
+                </div>
+            </div>
+            <div id="progress-content">
+                <!-- El contenido se cargará dinámicamente -->
+            </div>
+        </section>
+
+        <section id="settings" class="section">
+            <h2 class="page-title">Configuración</h2>
+            <div class="card">
+                <div class="card-content active">
+                    <div class="settings-option">
+                        <label for="fontSize">Tamaño de fuente:</label>
+                        <select id="fontSize">
+                            <option value="small">Pequeña</option>
+                            <option value="medium" selected>Mediana</option>
+                            <option value="large">Grande</option>
+                            <option value="xlarge">Muy grande</option>
+                        </select>
+                    </div>
+                    <div class="settings-option">
+                        <label for="contrast">Contraste:</label>
+                        <select id="contrast">
+                            <option value="normal">Normal</option>
+                            <option value="high">Alto</option>
+                        </select>
+                    </div>
+                    <div class="settings-option">
+                        <label>Modo oscuro:</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkMode">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="settings-option">
+                        <button class="btn btn-primary" id="resetProgress">Reiniciar Progreso</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="section">
+            <h2 class="page-title">Contáctenos</h2>
+            <div class="contact-options">
+                <div class="contact-card">
+                    <div class="contact-icon">📱</div>
+                    <h3>WhatsApp</h3>
+                    <p>Comuníquese con nosotros por WhatsApp para consultas rápidas</p>
+                    <a href="https://wa.me/5350861330" class="contact-link" target="_blank">Abrir WhatsApp</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">✉️</div>
+                    <h3>Correo Electrónico</h3>
+                    <p>Envíenos sus preguntas o comentarios por correo electrónico</p>
+                    <a href="mailto:asistentepediatrico2025@gmail.com" class="contact-link">Enviar Email</a>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">💬</div>
+                    <h3>Feedback</h3>
+                    <p>Comparta sus sugerencias para mejorar esta aplicación</p>
+                    <button class="contact-link" id="feedbackBtn">Dar Feedback</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>Plan E Pediatría - Residencia de Pediatría en Cuba</p>
+            <p>© 2024 - Aplicación Offline</p>
+        </div>
+    </footer>
+
+    <script>
+        // Datos del plan de estudios
+        const planData = {
+            year1: {
+                title: "Primer Año",
+                modules: [
+                    {
+                        id: "mod1",
+                        name: "Módulo 1: Atención Primaria de Salud en Pediatría",
+                        hours: { presential: 24, independent: 72, total: 96 },
+                        credits: 2,
+                        duration: { days: 12, weeks: 2.4 },
+                        topics: [
+                            "Conceptos de APS en Pediatría",
+                            "Organización de los servicios de APS",
+                            "Características del niño sano",
+                            "Programas de salud infantil"
+                        ],
+                        observations: "Se desarrolla en consultorios del médico de familia y policlínicos"
+                    },
+                    {
+                        id: "mod2",
+                        name: "Módulo 2: Consulta de puericultura",
+                        hours: { presential: 24, independent: 72, total: 96 },
+                        credits: 2,
+                        duration: { days: 12, weeks: 2.4 },
+                        topics: [
+                            "Evaluación del crecimiento y desarrollo",
+                            "Alimentación por edades",
+                            "Vacunación",
+                            "Prevención de accidentes"
+                        ],
+                        observations: "Enfocado en el niño sano y su desarrollo normal"
+                    },
+                    {
+                        id: "mod3",
+                        name: "Módulo 3: Supervisión del crecimiento y desarrollo",
+                        hours: { presential: 24, independent: 72, total: 96 },
+                        credits: 2,
+                        duration: { days: 12, weeks: 2.4 },
+                        topics: [
+                            "Parámetros antropométricos",
+                            "Valoración del desarrollo psicomotor",
+                            "Detectión de alteraciones",
+                            "Técnicas de medición"
+                        ],
+                        observations: "Incluye evaluación de percentiles y signos de alerta"
+                    },
+                    {
+                        id: "mod4",
+                        name: "Módulo 4: Acciones de Promoción de salud, prevención de enfermedades, atención médica integral y rehabilitación",
+                        hours: { presential: 24, independent: 72, total: 96 },
+                        credits: 2,
+                        duration: { days: 12, weeks: 2.4 },
+                        topics: [
+                            "Estrategias de promoción de salud",
+                            "Programas de prevención",
+                            "Atención integral al niño",
+                            "Rehabilitación pediátrica"
+                        ],
+                        observations: "Enfoque integral en todos los niveles de atención"
+                    },
+                    {
+                        id: "mod5",
+                        name: "Módulo 5: Enfermedades genéticas y defectos congénitos en la edad pediátrica",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Bases de genética médica",
+                            "Enfermedades cromosómicas",
+                            "Defectos congénitos frecuentes",
+                            "Asesoramiento genético"
+                        ],
+                        observations: "Impartido en centros municipales de genética médica"
+                    },
+                    {
+                        id: "mod6-1",
+                        name: "Módulo 6(I): Enfermedades Respiratorias",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Crisis asmáticas",
+                            "Faringoamigdalitis",
+                            "Afecciones de laringe, tráquea y bronquios",
+                            "Bronquitis crónica"
+                        ],
+                        observations: "Primera parte de tres del módulo de enfermedades respiratorias"
+                    },
+                    {
+                        id: "mod7-1",
+                        name: "Módulo 7(I): Enfermedades Digestivas y Nutrición",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Enfermedad diarreica aguda",
+                            "Trastornos digestivos menores",
+                            "Manejo hidroelectrolítico",
+                            "Parasitismo intestinal"
+                        ],
+                        observations: "Enfocado en patologías de alta frecuencia"
+                    },
+                    {
+                        id: "mod8-1",
+                        name: "Módulo 8(I): Clínica pediátrica (Misceláneas)",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Síndrome febril",
+                            "Enfermedades exantemáticas",
+                            "Enfermedades infecciosas",
+                            "Identificación del síndrome de respuesta inflamatoria sistémica"
+                        ],
+                        observations: "Abordaje integral de enfermedades infecciosas"
+                    },
+                    {
+                        id: "mod10-1",
+                        name: "Módulo 10(I): Cardiología Pediátrica",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Cardiopatías congénitas",
+                            "Cardiopatías agudas",
+                            "Otras afecciones cardiovasculares",
+                            "Interpretación de ECG y ecocardiograma"
+                        ],
+                        observations: "Rotación de 1 mes en servicios de cardiología"
+                    },
+                    {
+                        id: "mod11-1",
+                        name: "Módulo 11(I): Nefrología",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Infección urinaria",
+                            "Malformaciones genitourinarias",
+                            "Glomerulopatías",
+                            "Hematuria"
+                        ],
+                        observations: "Rotación de 1 mes en servicio de nefrología"
+                    },
+                    {
+                        id: "mod15",
+                        name: "Módulo 15: Cirugía pediátrica",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Afecciones quirúrgicas del niño",
+                            "Caumatología (quemaduras)",
+                            "Diagnóstico de afecciones quirúrgicas",
+                            "Manejo integral de quemaduras"
+                        ],
+                        observations: "Incluye conocimientos básicos de caumatología"
+                    },
+                    {
+                        id: "mod22-1",
+                        name: "Módulo 22: Evaluación integral del paciente grave",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Convulsión aguda",
+                            "Ahogamiento incompleto",
+                            "Cetoacidosis diabética",
+                            "Intoxicaciones agudas exógenas"
+                        ],
+                        observations: "Rotación de 1 mes en servicios de urgencia"
+                    },
+                    {
+                        id: "mod25",
+                        name: "Módulo 25: Metodología de la Investigación",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Diseño de protocolos de investigación",
+                            "Métodos de investigación",
+                            "Elaboración del TTE",
+                            "Publicaciones científicas"
+                        ],
+                        observations: "Prepara para la confección del protocolo del TTE"
+                    },
+                    {
+                        id: "mod27",
+                        name: "Módulo 27: Filosofía y Salud",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Filosofía de la medicina",
+                            "Ética médica",
+                            "Relación médico-paciente",
+                            "Aspectos sociales de la salud"
+                        ],
+                        observations: "Corresponde a la función de administración"
+                    },
+                    {
+                        id: "curso-mnt",
+                        name: "Curso: Medicina Natural y Tradicional",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Técnicas de MNT aplicadas a pediatría",
+                            "Fitoterapia",
+                            "Acupuntura",
+                            "Otras terapias alternativas"
+                        ],
+                        observations: "Prepara para utilizar MNT durante la residencia"
+                    }
+                ]
+            },
+            year2: {
+                title: "Segundo Año",
+                modules: [
+                    {
+                        id: "mod6-2",
+                        name: "Módulo 6(II): Enfermedades Respiratorias",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Malformaciones congénitas del aparato respiratorio",
+                            "Síndrome de interposición líquida",
+                            "Síndrome mediastinal",
+                            "Interpretación de punción pleural"
+                        ],
+                        observations: "Segunda parte del módulo de enfermedades respiratorias"
+                    },
+                    {
+                        id: "mod7-2",
+                        name: "Módulo 7(II): Enfermedades Digestivas y Nutrición",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Hepatopatías",
+                            "Manejo de urgencias gastroenterológicas",
+                            "Enfermedades de la nutrición",
+                            "Guías alimentarias"
+                        ],
+                        observations: "Segunda parte del módulo de enfermedades digestivas"
+                    },
+                    {
+                        id: "mod8-2",
+                        name: "Módulo 8(II): Clínica pediátrica (Misceláneas)",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Fiebre Reumática",
+                            "Síndrome del niño maltratado",
+                            "Otras enfermedades del colágeno",
+                            "Profundización en conocimientos del año anterior"
+                        ],
+                        observations: "Segunda parte del módulo de clínica pediátrica"
+                    },
+                    {
+                        id: "mod9",
+                        name: "Módulo 9: Hematología/Oncología pediátrica",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Anemias",
+                            "Trastornos de la coagulación",
+                            "Enfermedades onco-hematológicas malignas",
+                            "Diagnóstico diferencial de anemias"
+                        ],
+                        observations: "Estancia en servicio de hematología/oncología"
+                    },
+                    {
+                        id: "mod12-1",
+                        name: "Módulo 12(I): Enfermedades neurológicas",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Evaluación de trastornos del neurodesarrollo",
+                            "Epilepsia",
+                            "Crisis febriles",
+                            "Cefalea, infecciones del SNC"
+                        ],
+                        observations: "Primera parte del módulo de neurología"
+                    },
+                    {
+                        id: "mod13",
+                        name: "Módulo 13: Enfermedades del Sistema endocrino",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Enfermedades tiroideas",
+                            "Trastornos del crecimiento",
+                            "Diabetes mellitus",
+                            "Otras endocrinopatías"
+                        ],
+                        observations: "Impartido en servicios de clínicas pediátricas y consultas de endocrinología"
+                    },
+                    {
+                        id: "mod14-1",
+                        name: "Módulo 14: Neonatología",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Recién nacido sano",
+                            "Atención inmediata al RN",
+                            "Aplicación de conocimientos de APS",
+                            "Cuidados del RN"
+                        ],
+                        observations: "Rotación de 1 mes en servicios de neonatología"
+                    },
+                    {
+                        id: "mod23",
+                        name: "Módulo 23: Apoyo vital básico y avanzado",
+                        hours: { presential: 144, independent: 432, total: 576 },
+                        credits: 12,
+                        duration: { days: 72, weeks: 14.4 },
+                        topics: [
+                            "Valoración integral del paciente grave",
+                            "Apoyo Vital Avanzado",
+                            "Tratamiento de urgencias y emergencias",
+                            "Atención al niño politraumatizado"
+                        ],
+                        observations: "Rotación de 2 meses en terapia intensiva"
+                    },
+                    {
+                        id: "mod26",
+                        name: "Módulo 26: Proceso enseñanza-aprendizaje",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Metodologías de enseñanza",
+                            "Planificación de actividades docentes",
+                            "Evaluación del aprendizaje",
+                            "Educación sanitaria"
+                        ],
+                        observations: "Corresponde a la función docente-educativa"
+                    },
+                    {
+                        id: "curso-inmuno",
+                        name: "Curso: Inmunología",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Bases de inmunología",
+                            "Inmunodeficiencias",
+                            "Alergias",
+                            "Aplicaciones clínicas"
+                        ],
+                        observations: "Cubre aspectos aplicables en la mayoría de módulos clínicos"
+                    },
+                    {
+                        id: "curso-eeg",
+                        name: "Curso: Electroencefalografía",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Fundamentos de EEG",
+                            "Interpretación de electroencefalogramas",
+                            "EEG en patologías neurológicas",
+                            "Aplicaciones clínicas"
+                        ],
+                        observations: "Permite interpretación de estudios complementarios"
+                    }
+                ]
+            },
+            year3: {
+                title: "Tercer Año",
+                modules: [
+                    {
+                        id: "mod6-3",
+                        name: "Módulo 6(III): Enfermedades Respiratorias",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Afecciones respiratorias crónicas",
+                            "Vasculitis",
+                            "Diagnóstico diferencial de vasculitis",
+                            "Manejo integral de enfermedades respiratorias crónicas"
+                        ],
+                        observations: "Tercera parte del módulo de enfermedades respiratorias"
+                    },
+                    {
+                        id: "mod8-3",
+                        name: "Módulo 8(III): Clínica pediátrica (Misceláneas)",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Profundización en conocimientos previos",
+                            "Atención a patologías complejas",
+                            "Manejo integral de enfermedades misceláneas",
+                            "Atención a pacientes crónicos"
+                        ],
+                        observations: "Tercera parte del módulo de clínica pediátrica"
+                    },
+                    {
+                        id: "mod11-2",
+                        name: "Módulo 11(II): Nefrología",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Enfermedades renales crónicas",
+                            "Tubulopatías",
+                            "Enfermedad quística renal",
+                            "Insuficiencia renal"
+                        ],
+                        observations: "Segunda parte del módulo de nefrología"
+                    },
+                    {
+                        id: "mod12-2",
+                        name: "Módulo 12(II): Enfermedades neurológicas",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Tumores del SNC",
+                            "Hipertensión endocraneana",
+                            "Ataxia",
+                            "Afecciones del sistema nervioso periférico"
+                        ],
+                        observations: "Segunda parte del módulo de neurología"
+                    },
+                    {
+                        id: "mod14-2",
+                        name: "Módulo 14(II): Neonatología",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Recién nacido de riesgo",
+                            "Recién nacido patológico",
+                            "Atención al RN en salas abiertas",
+                            "Manejo de complicaciones neonatales"
+                        ],
+                        observations: "Rotación de 2 meses en servicios de neonatología"
+                    },
+                    {
+                        id: "mod16-21",
+                        name: "Módulos 16-21: Interconsultas",
+                        hours: { presential: 144, independent: 432, total: 576 },
+                        credits: 12,
+                        duration: { days: 72, weeks: 14.4 },
+                        topics: [
+                            "Dermatología pediátrica",
+                            "Ortopedia pediátrica",
+                            "Oftalmología pediátrica",
+                            "Otorrinolaringología pediátrica",
+                            "Psiquiatría infanto-juvenil",
+                            "Psicología pediátrica"
+                        ],
+                        observations: "Rotación por áreas de interconsulta"
+                    },
+                    {
+                        id: "mod24",
+                        name: "Módulo 24: Urgencias, emergencias y cuidados intensivos",
+                        hours: { presential: 48, independent: 144, total: 192 },
+                        credits: 4,
+                        duration: { days: 24, weeks: 4.8 },
+                        topics: [
+                            "Síndrome de shock",
+                            "Disfunción múltiple de órganos",
+                            "Respuesta inflamatoria sistémica",
+                            "Reafirmación de conocimientos en terapia intensiva"
+                        ],
+                        observations: "Segunda rotación por terapia intensiva (1 mes)"
+                    },
+                    {
+                        id: "mod28",
+                        name: "Módulo 28: Administración en Salud",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Gestión de servicios de salud",
+                            "Planificación en salud",
+                            "Evaluación de programas",
+                            "Administración de recursos"
+                        ],
+                        observations: "Curso de 48 horas correspondiente a función administrativa"
+                    },
+                    {
+                        id: "curso-farmaco",
+                        name: "Curso: Actualización Farmacoterapéutica",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Nuevos medicamentos en el mercado",
+                            "Indicaciones y reacciones adversas",
+                            "Farmacovigilancia",
+                            "Selección racional de medicamentos"
+                        ],
+                        observations: "Impartido por profesores de comités fármaco-terapéuticos"
+                    },
+                    {
+                        id: "curso-ecg",
+                        name: "Curso: Electrocardiografía",
+                        hours: { presential: 12, independent: 36, total: 48 },
+                        credits: 1,
+                        duration: { days: 6, weeks: 1.2 },
+                        topics: [
+                            "Interpretación de ECG",
+                            "Arritmias pediátricas",
+                            "Alteraciones electrocardiográficas",
+                            "Ecocardiografía básica"
+                        ],
+                        observations: "Permite adquirir habilidades para manejo de equipamiento en cardiología"
+                    }
+                ]
+            }
+        };
+
+        // Estado de la aplicación
+        let appState = {
+            progress: {},
+            notes: {},
+            settings: {
+                fontSize: 'medium',
+                contrast: 'normal',
+                darkMode: false
+            }
+        };
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAppState();
+            renderAllContent();
+            setupEventListeners();
+            applySettings();
+        });
+
+        // Cargar estado desde localStorage
+        function loadAppState() {
+            const savedState = localStorage.getItem('planEPediatria');
+            if (savedState) {
+                appState = JSON.parse(savedState);
+            }
+        }
+
+        // Guardar estado en localStorage
+        function saveAppState() {
+            localStorage.setItem('planEPediatria', JSON.stringify(appState));
+        }
+
+        // Renderizar todo el contenido
+        function renderAllContent() {
+            renderYearContent('year1');
+            renderYearContent('year2');
+            renderYearContent('year3');
+            renderProgressContent();
+        }
+
+        // Renderizar contenido por año
+        function renderYearContent(year) {
+            const container = document.getElementById(`${year}-content`);
+            const yearData = planData[year];
+            
+            if (!container || !yearData) return;
+            
+            let html = '';
+            
+            yearData.modules.forEach(module => {
+                const isCompleted = appState.progress[module.id]?.completed || false;
+                const completionDate = appState.progress[module.id]?.completionDate || '';
+                
+                html += `
+                    <div class="card">
+                        <div class="card-header" data-module="${module.id}">
+                            <h3>${module.name} ${isCompleted ? '✅' : ''}</h3>
+                            <span>${module.credits} créditos</span>
+                        </div>
+                        <div class="card-content" id="content-${module.id}">
+                            <div class="module-info">
+                                <div class="info-item">
+                                    <div class="info-label">Horas presenciales</div>
+                                    <div class="info-value">${module.hours.presential}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Horas de autoestudio</div>
+                                    <div class="info-value">${module.hours.independent}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Total de horas</div>
+                                    <div class="info-value">${module.hours.total}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Duración estimada</div>
+                                    <div class="info-value">${module.duration.weeks} semanas</div>
+                                </div>
+                            </div>
+                            
+                            <h4>Temas principales:</h4>
+                            <ul class="topics-list">
+                                ${module.topics.map(topic => `<li>${topic}</li>`).join('')}
+                            </ul>
+                            
+                            ${module.observations ? `
+                                <div class="observations">
+                                    <h4>Observaciones:</h4>
+                                    <p>${module.observations}</p>
+                                </div>
+                            ` : ''}
+                            
+                            <div class="completion-controls">
+                                <button class="btn ${isCompleted ? 'btn-warning' : 'btn-success'}" 
+                                        data-module="${module.id}" 
+                                        data-action="${isCompleted ? 'uncomplete' : 'complete'}">
+                                    ${isCompleted ? 'Marcar como no completada' : 'Marcar como completada'}
+                                </button>
+                                ${isCompleted ? `<span class="completion-date">Completado: ${completionDate}</span>` : ''}
+                            </div>
+                            
+                            <div class="notes-section">
+                                <h4>Mis apuntes:</h4>
+                                <textarea class="notes-textarea" data-module="${module.id}" 
+                                          placeholder="Escribe aquí tus apuntes, dudas, recordatorios...">${appState.notes[module.id] || ''}</textarea>
+                                <button class="btn btn-primary save-notes" data-module="${module.id}">Guardar apuntes</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // Añadir event listeners para los encabezados de tarjetas
+            document.querySelectorAll(`#${year}-content .card-header`).forEach(header => {
+                header.addEventListener('click', function() {
+                    const moduleId = this.getAttribute('data-module');
+                    const content = document.getElementById(`content-${moduleId}`);
+                    content.classList.toggle('active');
+                });
+            });
+        }
+
+        // Renderizar contenido de progreso
+        function renderProgressContent() {
+            const container = document.getElementById('progress-content');
+            if (!container) return;
+            
+            let html = '';
+            let totalModules = 0;
+            let completedModules = 0;
+            
+            // Calcular progreso general
+            Object.keys(planData).forEach(year => {
+                planData[year].modules.forEach(module => {
+                    totalModules++;
+                    if (appState.progress[module.id]?.completed) {
+                        completedModules++;
+                    }
+                    
+                    const isCompleted = appState.progress[module.id]?.completed || false;
+                    const completionDate = appState.progress[module.id]?.completionDate || '';
+                    const progressPercentage = isCompleted ? 100 : 0;
+                    
+                    html += `
+                        <div class="card progress-card">
+                            <div class="card-header">
+                                <div class="progress-header">
+                                    <h3>${module.name}</h3>
+                                    <span>${progressPercentage}%</span>
+                                </div>
+                            </div>
+                            <div class="card-content active">
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar ${isCompleted ? 'water-effect' : ''}" 
+                                         style="width: ${progressPercentage}%"></div>
+                                    <div class="progress-percentage">${progressPercentage}%</div>
+                                </div>
+                                
+                                <div class="completion-controls">
+                                    <button class="btn ${isCompleted ? 'btn-warning' : 'btn-success'}" 
+                                            data-module="${module.id}" 
+                                            data-action="${isCompleted ? 'uncomplete' : 'complete'}">
+                                        ${isCompleted ? 'Marcar como no completada' : 'Marcar como completada'}
+                                    </button>
+                                    ${isCompleted ? `<span class="completion-date">Completado: ${completionDate}</span>` : ''}
+                                </div>
+                                
+                                <div class="notes-section">
+                                    <h4>Mis apuntes:</h4>
+                                    <textarea class="notes-textarea" data-module="${module.id}" 
+                                              placeholder="Escribe aquí tus apuntes, dudas, recordatorios...">${appState.notes[module.id] || ''}</textarea>
+                                    <button class="btn btn-primary save-notes" data-module="${module.id}">Guardar apuntes</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            });
+            
+            container.innerHTML = html;
+            
+            // Actualizar progreso general
+            const overallPercentage = totalModules > 0 ? Math.round((completedModules / totalModules) * 100) : 0;
+            document.getElementById('overallPercentage').textContent = `${overallPercentage}%`;
+            document.getElementById('overallProgressBar').style.width = `${overallPercentage}%`;
+            document.getElementById('overallProgressText').textContent = `${overallPercentage}%`;
+            document.getElementById('completedRotations').textContent = completedModules;
+            document.getElementById('totalRotations').textContent = totalModules;
+            
+            // Añadir efecto de agua si está completado
+            if (overallPercentage === 100) {
+                document.getElementById('overallProgressBar').classList.add('water-effect');
+            } else {
+                document.getElementById('overallProgressBar').classList.remove('water-effect');
+            }
+        }
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Menú lateral
+            document.getElementById('menuToggle').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.add('active');
+            });
+            
+            document.getElementById('closeSidebar').addEventListener('click', function() {
+                document.getElementById('sidebar').classList.remove('active');
+            });
+            
+            // Navegación entre secciones
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                    document.getElementById('sidebar').classList.remove('active');
+                });
+            });
+            
+            // Completar/descompletar módulos
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('[data-action="complete"], [data-action="uncomplete"]')) {
+                    const moduleId = e.target.getAttribute('data-module');
+                    const action = e.target.getAttribute('data-action');
+                    toggleModuleCompletion(moduleId, action === 'complete');
+                }
+            });
+            
+            // Guardar apuntes
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('.save-notes')) {
+                    const moduleId = e.target.getAttribute('data-module');
+                    const textarea = document.querySelector(`textarea[data-module="${moduleId}"]`);
+                    if (textarea) {
+                        saveNotes(moduleId, textarea.value);
+                    }
+                }
+            });
+            
+            // Configuración
+            document.getElementById('fontSize').addEventListener('change', function() {
+                appState.settings.fontSize = this.value;
+                applySettings();
+                saveAppState();
+            });
+            
+            document.getElementById('contrast').addEventListener('change', function() {
+                appState.settings.contrast = this.value;
+                applySettings();
+                saveAppState();
+            });
+            
+            document.getElementById('darkMode').addEventListener('change', function() {
+                appState.settings.darkMode = this.checked;
+                applySettings();
+                saveAppState();
+            });
+            
+            document.getElementById('resetProgress').addEventListener('click', function() {
+                if (confirm('¿Está seguro de que desea reiniciar todo su progreso? Esta acción no se puede deshacer.')) {
+                    resetProgress();
+                }
+            });
+            
+            // Feedback
+            document.getElementById('feedbackBtn').addEventListener('click', function() {
+                alert('Gracias por su interés en mejorar Plan E Pediatría. Puede enviar sus comentarios a asistentepediatrico2025@gmail.com');
+            });
+        }
+
+        // Mostrar sección específica
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Alternar completado de módulo
+        function toggleModuleCompletion(moduleId, complete) {
+            if (!appState.progress[moduleId]) {
+                appState.progress[moduleId] = {};
+            }
+            
+            appState.progress[moduleId].completed = complete;
+            
+            if (complete) {
+                appState.progress[moduleId].completionDate = new Date().toLocaleDateString();
+            } else {
+                appState.progress[moduleId].completionDate = '';
+            }
+            
+            saveAppState();
+            renderAllContent();
+        }
+
+        // Guardar apuntes
+        function saveNotes(moduleId, notes) {
+            appState.notes[moduleId] = notes;
+            saveAppState();
+            alert('Apuntes guardados correctamente.');
+        }
+
+        // Aplicar configuración
+        function applySettings() {
+            // Tamaño de fuente
+            document.body.style.fontSize = getFontSizeValue(appState.settings.fontSize);
+            
+            // Contraste
+            if (appState.settings.contrast === 'high') {
+                document.body.classList.add('high-contrast');
+            } else {
+                document.body.classList.remove('high-contrast');
+            }
+            
+            // Modo oscuro
+            if (appState.settings.darkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            
+            // Actualizar controles de UI
+            document.getElementById('fontSize').value = appState.settings.fontSize;
+            document.getElementById('contrast').value = appState.settings.contrast;
+            document.getElementById('darkMode').checked = appState.settings.darkMode;
+        }
+
+        // Obtener valor de tamaño de fuente
+        function getFontSizeValue(size) {
+            switch(size) {
+                case 'small': return '14px';
+                case 'medium': return '16px';
+                case 'large': return '18px';
+                case 'xlarge': return '20px';
+                default: return '16px';
+            }
+        }
+
+        // Reiniciar progreso
+        function resetProgress() {
+            appState.progress = {};
+            appState.notes = {};
+            saveAppState();
+            renderAllContent();
+            alert('Progreso reiniciado correctamente.');
+        }
+    </script>
+</body>
+</html>
